@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 245, 245, 245;
+  --primary-color: 0, 122, 204;
+  --secondary-color: 242, 107, 5;
+  --accent-color: 0, 168, 120;
+  --light-gray: 240, 240, 240;
+  --medium-gray: 200, 200, 200;
+  --dark-gray: 100, 100, 100;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300;
+  }
+  
+  .featured-badge {
+    @apply bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded absolute top-2 left-2;
+  }
+  
+  .verified-badge {
+    @apply bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full ml-2;
+  }
+  
+  .search-input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+  
+  .filter-checkbox {
+    @apply mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded;
+  }
+  
+  .rating-stars {
+    @apply text-yellow-400;
+  }
+  
+  .section-title {
+    @apply text-xl font-bold mb-4 pb-2 border-b border-gray-200;
+  }
+  
+  .ad-banner {
+    @apply w-full bg-gray-100 border border-gray-200 rounded-md flex items-center justify-center text-gray-400 my-4;
+  }
+  
+  .ad-sidebar {
+    @apply bg-gray-100 border border-gray-200 rounded-md flex items-center justify-center text-gray-400;
+  }
+  
+  .category-card {
+    @apply bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center justify-center text-center;
+  }
+  
+  .listing-card {
+    @apply bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300 relative;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .form-input {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500;
+  }
+  
+  .form-select {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500;
+  }
+  
+  .form-checkbox {
+    @apply h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded;
+  }
+  
+  .form-radio {
+    @apply h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300;
+  }
+  
+  .form-section {
+    @apply mb-8 p-6 bg-white rounded-lg shadow-sm;
+  }
+}
