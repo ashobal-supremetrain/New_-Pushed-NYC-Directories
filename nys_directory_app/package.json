@@ -10,6 +10,8 @@
     "test-db": "ts-node src/scripts/test-db.ts"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
+    "framer-motion": "^12.5.0",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.3",
     "next": "14.0.4",
