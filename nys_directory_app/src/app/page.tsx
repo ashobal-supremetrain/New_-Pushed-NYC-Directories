@@ -21,6 +21,7 @@ interface Business {
   reviews: number;
   status: string;
   distance?: number;
+  count?: number;
 }
 
 const container = {
@@ -43,7 +44,7 @@ export default function Home() {
   const [businesses, setBusinesses] = useState<Business[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [categories, setCategories] = useState<string[]>([])
+  const [categories, setCategories] = useState<Business[]>([])
 
   useEffect(() => {
     fetchBusinesses();
@@ -56,7 +57,10 @@ export default function Home() {
       const data = await response.json();
       
       if (data.success) {
-        setCategories(data.data.map((cat: any) => cat.name));
+        setCategories(data.data.map((cat: any) => ({
+          ...cat,
+          count: cat.businesses.length
+        })));
       } else {
         setError('Failed to load categories');
       }
@@ -116,57 +120,146 @@ export default function Home() {
   return (
     <div className="space-y-12 py-8">
       {/* Hero Section */}
-      <section className="text-center py-12 bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-lg">
-        <div className="max-w-3xl mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">Find Local Businesses in New York State</h1>
-          <p className="text-xl mb-8">Discover and connect with businesses in your area</p>
-          <div className="max-w-2xl mx-auto">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              handleSearch();
-            }} className="flex gap-4">
-              <input
-                type="text"
-                placeholder="Search businesses..."
-                className="flex-1 px-4 py-3 rounded-lg text-gray-900"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button 
-                type="submit"
-                className="bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-primary-50"
+      <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-24">
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="container mx-auto px-4 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <h1 className="text-5xl font-bold mb-6">
+              Discover New York State Businesses
+            </h1>
+            <p className="text-xl mb-8 text-blue-100">
+              Find and connect with the best businesses across New York State. From local shops to major enterprises.
+            </p>
+            <div className="flex justify-center gap-4">
+              <Link
+                href="/categories"
+                className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-blue-50 transition-colors"
               >
-                Search
-              </button>
-            </form>
-          </div>
+                Browse Categories
+              </Link>
+              <Link
+                href="/search"
+                className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-colors"
+              >
+                Search Businesses
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Categories Section */}
-      <section className="py-8">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Browse by Category</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category) => (
-              <Link 
-                key={category} 
-                href={`/categories/${encodeURIComponent(category)}`}
-                className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Popular Categories
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              Explore our curated selection of business categories
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {categories.slice(0, 6).map((category, index) => (
+              <motion.div
+                key={category._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                className="group"
               >
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {category.split('-').map(word => 
-                    word.charAt(0).toUpperCase() + word.slice(1)
-                  ).join(' ')}
-                </h3>
-                <p className="text-gray-600">
-                  Browse {category.split('-').map(word => 
-                    word.charAt(0).toUpperCase() + word.slice(1)
-                  ).join(' ')} businesses in New York State
-                </p>
-              </Link>
+                <Link href={`/categories/${category._id}`} className="block">
+                  <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <div className="p-8">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-2xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {category.name}
+                        </h3>
+                        <span className="px-4 py-1 bg-blue-50 text-blue-600 rounded-full text-sm font-medium">
+                          {category.count}
+                        </span>
+                      </div>
+                      <div className="flex items-center text-gray-500">
+                        <span className="text-sm">View businesses</span>
+                        <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Featured Businesses Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Featured Businesses
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              Discover top-rated businesses in New York State
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {businesses.slice(0, 6).map((business, index) => (
+              <motion.div
+                key={business._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+              >
+                <BusinessCard business={business} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-blue-50">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Ready to Find Your Business?
+            </h2>
+            <p className="text-gray-600 text-lg mb-8">
+              Start exploring our comprehensive directory of New York State businesses today.
+            </p>
+            <Link
+              href="/search"
+              className="inline-block bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Start Your Search
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -177,48 +270,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      {/* Featured Businesses */}
-      <section>
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Featured Businesses</h2>
-          {loading ? (
-            <div className="flex justify-center items-center min-h-[400px]">
-              <LoadingSpinner size="large" />
-            </div>
-          ) : (
-            <motion.div
-              variants={container}
-              initial="hidden"
-              animate="show"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {Array.isArray(businesses) && businesses.slice(0, 6).map((business) => (
-                <motion.div
-                  key={business._id}
-                  variants={item}
-                >
-                  <BusinessCard business={business} />
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="text-center bg-gray-50 p-12 rounded-lg">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Own a Business?</h2>
-          <p className="text-xl text-gray-600 mb-8">Join our directory and reach more customers</p>
-          <Link
-            href="/submit"
-            className="inline-block bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-700"
-          >
-            List Your Business
-          </Link>
-        </div>
-      </section>
     </div>
   )
 }
